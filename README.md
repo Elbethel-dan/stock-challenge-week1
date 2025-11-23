@@ -6,6 +6,14 @@ This project focuses on analyzing a large financial news dataset to understand h
 
 I conducted a high-level examination of the financial news dataset, including basic descriptive statistics, publisher activity, headline characteristics, and publication trends over time. Performed keyword analysis and topic exploration to understand dominant themes and overall news patterns.
 
+# 📈 2. Technical Indicator Analysis (TA-Lib & PyNance)
+
+Loaded and prepared stock price data, applied key technical indicators (e.g., moving averages, RSI, MACD) using TA-Lib and PyNance, and visualized market trends to understand general stock behavior and price movements.
+
+# 📰 3. News Sentiment Analysis
+
+Computed sentiment scores for news headlines, aligned sentiment with stock price data, calculated daily returns, and performed correlation analysis to determine the relationship between news sentiment and stock performance.
+
 ---
 
 ## ⚙️ Reproduce this environment
