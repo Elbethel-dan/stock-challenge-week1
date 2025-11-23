@@ -2,7 +2,7 @@ from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 
 class TextAnalysis:
-    def init(self, df, text_column='processed_headline', publisher_column='publisher'):
+    def __init__(self, df, text_column='processed_headline', publisher_column='publisher'):
         self.df = df
         self.text_column = text_column
         self.publisher_column = publisher_column

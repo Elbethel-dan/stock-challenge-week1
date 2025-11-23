@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 class Plotting:
-    def init(self, df):
+    def __init__(self, df):
         self.df = df
 
     def headline_length_hist(self, column='headline_len_words'):

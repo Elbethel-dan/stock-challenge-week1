@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 class Preprocessor:
-    def init(self):
+    def __init__(self):
         self.stop_words = set(stopwords.words('english'))
 
     def preprocess_text(self, text):

@@ -1,7 +1,7 @@
 import pandas as pd
 
 class DataLoader:
-    def init(self, filepath):
+    def __init__(self, filepath):
         self.filepath = filepath
         self.df = None
         self.df_clean = None
