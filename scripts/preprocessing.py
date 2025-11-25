@@ -2,6 +2,7 @@ import pandas as pd
 import string
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+import nltk
 
 class Preprocessor:
     def __init__(self, language="english", remove_numbers=True):
@@ -10,9 +11,19 @@ class Preprocessor:
         punctuation removal, and optional number removal.
         """
         self.language = language
-        self.stop_words = set(stopwords.words(language))
         self.remove_numbers = remove_numbers
         self.punctuation_table = str.maketrans("", "", string.punctuation)
+
+        # Ensure stopwords are downloaded
+        try:
+            self.stop_words = set(stopwords.words(language))
+        except LookupError:
+            nltk.download('stopwords')
+            self.stop_words = set(stopwords.words(language))
+        except OSError:
+            # Handle unsupported language
+            print(f"Warning: Stopwords not available for '{language}'. No stopwords will be removed.")
+            self.stop_words = set()
 
     def preprocess_text(self, text):
         """Clean and tokenize a single text string."""
@@ -30,7 +41,8 @@ class Preprocessor:
         words = word_tokenize(text)
 
         # Remove stopwords
-        words = [w for w in words if w not in self.stop_words]
+        if self.stop_words:
+            words = [w for w in words if w not in self.stop_words]
 
         # Optional: remove numbers
         if self.remove_numbers:
@@ -53,4 +65,3 @@ class Preprocessor:
         df['processed_headline_str'] = df['processed_headline'].apply(lambda x: " ".join(x))
 
         return df
-        
