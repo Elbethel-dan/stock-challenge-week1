@@ -101,17 +101,4 @@ class PlotUtils:
             plt.savefig(save_path, bbox_inches='tight')
         plt.show()
 
-    def plot_predictions(self, actual, predicted, title="Actual vs Predicted Loans", save_path=None):
-        df_plot = pd.DataFrame({"Actual": actual, "Predicted": predicted})
-        plt.figure(figsize=(8, 5))
-        sns.countplot(
-            data=df_plot.melt(var_name="Type", value_name="Loan_Status"),
-            x="Loan_Status",
-            hue="Type"
-        )
-        plt.title(title)
-        plt.xlabel("Loan Status (0 = Not Approved, 1 = Approved)")
-        plt.ylabel("Count")
-        if save_path:
-            plt.savefig(save_path, bbox_inches='tight')
-        plt.show()
+    
