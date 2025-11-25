@@ -48,22 +48,35 @@ class PlotUtils:
             plt.savefig(save_path, bbox_inches='tight')
         plt.show()
 
-    def boxplot(self, column, by=None, title=None, save_path=None):
+    def boxplot(self, column, by=None, title=None, save_path=None): 
+        plt.figure(figsize=(10, 6))
         
-        plt.figure(figsize=(8, 5))
+        # Use a vibrant color palette
+        palette = "Set2"
         
         if by:
-            sns.boxplot(data=self.df, x=by, y=column)
-            plt.xlabel(by)
-            plt.ylabel(column)
-            plt.title(title or f'Box plot of {column} grouped by {by}')
+            sns.boxplot(data=self.df, x=by, y=column, palette=palette, showfliers=True)
+            plt.xlabel(by, fontsize=12)
+            plt.ylabel(column, fontsize=12)
+            plt.title(title or f'Box plot of {column} grouped by {by}', fontsize=14)
         else:
-            sns.boxplot(y=self.df[column])
-            plt.ylabel(column)
-            plt.title(title or f'Box plot of {column}')
+            sns.boxplot(y=self.df[column], palette=palette, showfliers=True)
+            plt.ylabel(column, fontsize=12)
+            plt.title(title or f'Box plot of {column}', fontsize=14)
+        
+        # Add a grid for easier readability
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        # Rotate x-axis labels if grouped
+        if by:
+            plt.xticks(rotation=45, ha='right')
+        
+        # Tight layout for better spacing
+        plt.tight_layout()
         
         if save_path:
-            plt.savefig(save_path, bbox_inches='tight')
+            plt.savefig(save_path, bbox_inches='tight', dpi=300)
         
         plt.show()
- 
+
+    
