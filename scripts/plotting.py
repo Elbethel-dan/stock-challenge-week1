@@ -79,4 +79,14 @@ class PlotUtils:
         
         plt.show()
 
-    
+    def bar(self, x_col, y_col=None, hue=None, title=None, save_path=None):
+        plt.figure(figsize=(8, 5))
+        sns.barplot(data=self.df, x=x_col, y=y_col, hue=hue, palette="Set2", ci=None)
+        plt.title(title or f'Bar plot of {y_col or "count"} by {x_col}')
+        plt.xlabel(x_col)
+        plt.ylabel(y_col or 'Count')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.show()   
