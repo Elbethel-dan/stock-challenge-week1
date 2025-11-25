@@ -1,99 +1,92 @@
+
 import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
-class Plotting:
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+sns.set_theme(style="whitegrid")
+
+class PlotUtils:
+    """
+    A utility class for plotting data in the Loan Prediction project.
+    Supports histogram, scatter, line plots, and prediction comparison.
+    """
+
     def __init__(self, df):
         self.df = df
 
-    def headline_length_hist(self, column='headline_len_words'):
-        plt.hist(self.df[column], bins=30)
-        plt.xlabel("Headline Length (words)")
-        plt.ylabel("Frequency")
-        plt.title("Distribution of Headline Lengths")
+    def histogram(self, column, bins=10, title=None, save_path=None):
+        plt.figure(figsize=(8, 5))
+        sns.histplot(self.df[column], bins=bins, kde=True)
+        plt.title(title or f'Histogram of {column}')
+        plt.xlabel(column)
+        plt.ylabel('Frequency')
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight')
         plt.show()
 
-    def boxplot_column(df, column, title="Box Plot"):
-        plt.figure(figsize=(8,5))
-        plt.boxplot(df[column].dropna())
-        plt.title(title)
-        plt.ylabel(column)
+    def scatter(self, x_col, y_col, hue=None, title=None, save_path=None):
+        plt.figure(figsize=(8, 5))
+        sns.scatterplot(data=self.df, x=x_col, y=y_col, hue=hue)
+        plt.title(title or f'Scatter plot of {y_col} vs {x_col}')
+        plt.xlabel(x_col)
+        plt.ylabel(y_col)
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight')
         plt.show()
 
-    def plot_yearly_publication_counts(df, date_column="date"):
-        """
-        Plots the number of articles published per year.
-        """
+    def line(self, x_col, y_col, title=None, save_path=None):
+        plt.figure(figsize=(8, 5))
+        sns.lineplot(data=self.df, x=x_col, y=y_col)
+        plt.title(title or f'Line plot of {y_col} vs {x_col}')
+        plt.xlabel(x_col)
+        plt.ylabel(y_col)
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight')
+        plt.show()
 
-        # Ensure the date column is datetime
-        df[date_column] = pd.to_datetime(df[date_column], errors="coerce")
-
-        # Extract year
-        df["year"] = df[date_column].dt.year
-
-        # Count articles per year
-        yearly_counts = df["year"].value_counts().sort_index()
-
-        # Print values
-        for year, count in yearly_counts.items():
-            print(f"{year}: {count} articles")
-
-        # Plot
-        plt.figure(figsize=(10, 5))
-        yearly_counts.plot(kind="bar")
-
-        plt.title("Yearly Publication Counts")
-        plt.xlabel("Year")
-        plt.ylabel("Number of Articles")
-        plt.xticks(rotation=45)
+    def boxplot(self, column, by=None, title=None, save_path=None): 
+        plt.figure(figsize=(10, 6))
+        
+        # Use a vibrant color palette
+        palette = "Set2"
+        
+        if by:
+            sns.boxplot(data=self.df, x=by, y=column, palette=palette, showfliers=True)
+            plt.xlabel(by, fontsize=12)
+            plt.ylabel(column, fontsize=12)
+            plt.title(title or f'Box plot of {column} grouped by {by}', fontsize=14)
+        else:
+            sns.boxplot(y=self.df[column], palette=palette, showfliers=True)
+            plt.ylabel(column, fontsize=12)
+            plt.title(title or f'Box plot of {column}', fontsize=14)
+        
+        # Add a grid for easier readability
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        # Rotate x-axis labels if grouped
+        if by:
+            plt.xticks(rotation=45, ha='right')
+        
+        # Tight layout for better spacing
         plt.tight_layout()
+        
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        
         plt.show()
 
-    def weekday_trends(self, date_column='date', headline_column='headline'):
-        weekday_counts = self.df.groupby(self.df[date_column].dt.day_name())[headline_column].count()
-        weekday_order = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-        weekday_counts = weekday_counts.reindex(weekday_order)
-        plt.figure(figsize=(8,5))
-        weekday_counts.plot(kind='bar', color='skyblue')
-        plt.title("Articles Published by Weekday")
-        plt.xlabel("Weekday")
-        plt.ylabel("Number of Articles")
-        plt.show()
-
-    def hourly_trends(self, date_column='date', headline_column='headline'):
-        hour_counts = self.df.groupby(self.df[date_column].dt.hour)[headline_column].count()
-        plt.figure(figsize=(8,5))
-        hour_counts.plot(kind='bar', color='orange')
-        plt.title("Articles Published by Hour of Day")
-        plt.xlabel("Hour")
-        plt.ylabel("Number of Articles")
-        plt.show()
-
-
-    def plot_publisher_domains(df, top_n=10):
-
-        df['publisher_domain'] = df['publisher'].str.extract(r'@([\w\.-]+)$')
-
-         # Count by domain
-        domain_counts = df['publisher_domain'].value_counts().head(top_n)
-
-    # Plot
-        plt.figure(figsize=(10, 5))
-        domain_counts.plot(kind='bar', color='green')
-        plt.title(f"Top {top_n} Publisher Domains by Number of Articles")
-        plt.xlabel("Domain")
-        plt.ylabel("Number of Articles")
-        plt.xticks(rotation=45)
+    def bar(self, x_col, y_col=None, hue=None, title=None, save_path=None):
+        plt.figure(figsize=(8, 5))
+        sns.barplot(data=self.df, x=x_col, y=y_col, hue=hue, palette="Set2", ci=None)
+        plt.title(title or f'Bar plot of {y_col or "count"} by {x_col}')
+        plt.xlabel(x_col)
+        plt.ylabel(y_col or 'Count')
+        plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
-        plt.show()
-
-
-    def plot_top_publishers(df, top_n=10):
-
-        publisher_counts = df['publisher'].value_counts().head(top_n)
-
-        plt.figure(figsize=(10,5))
-        publisher_counts.plot(kind='bar')
-        plt.title(f"Top {top_n} Publishers")
-        plt.xlabel("Publisher")
-        plt.ylabel("Number of Articles")
-        plt.tight_layout()
-        plt.show()
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight', dpi=300)
+        plt.show()   

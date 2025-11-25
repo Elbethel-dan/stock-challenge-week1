@@ -1,39 +1,20 @@
 import pandas as pd
 
-class DataLoader:
-    def __init__(self, filepath):
-        self.filepath = filepath
-        self.df = None
-        self.df_clean = None
+def load_data(file_path: str) -> pd.DataFrame:
+    """
+    Load data from CSV, Excel, or JSON files based on file extension.
+    Supported formats: .csv, .xlsx, .xls, .json
+    """
+    file_ext = file_path.lower().split('.')[-1]
 
-    def load_csv(self):
-        self.df = pd.read_csv(self.filepath)
-        return self.df
-
-    def drop_columns(self, columns):
-        self.df = self.df.drop(columns=columns)
-
-    def add_headline_length(self, column='headline'):
-        self.df['headline_len_words'] = self.df[column].str.split().str.len()
-
-    def remove_outliers(self, column='headline_len_words'):
-        Q1 = self.df[column].quantile(0.25)
-        Q3 = self.df[column].quantile(0.75)
-        IQR = Q3 - Q1
-        lower = Q1 - 1.5 * IQR
-        upper = Q3 + 1.5 * IQR
-        self.df_clean = self.df[(self.df[column] >= lower) & (self.df[column] <= upper)]
-        return self.df_clean
-
-    def parse_dates(self, columns=["date"], timezone="America/New_York"):
-  
-        for column in columns:
-            # Convert to datetime (coerce invalid values)
-            self.df_clean[column] = pd.to_datetime(
-                self.df_clean[column],
-                errors="coerce",
-                utc=True
-        )
-
-        # Convert to desired timezone
-            self.df_clean[column] = self.df_clean[column].dt.tz_convert(timezone)
+    try:
+        if file_ext == "csv":
+            return pd.read_csv(file_path)
+        elif file_ext in ("xlsx", "xls"):
+            return pd.read_excel(file_path)
+        elif file_ext == "json":
+            return pd.read_json(file_path)
+        else:
+            raise ValueError(f"Unsupported file type: .{file_ext}")
+    except Exception as e:
+        raise ValueError(f"Failed to load file '{file_path}': {e}")
